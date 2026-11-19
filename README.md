@@ -30,7 +30,7 @@ The kit does not publish the practice answers or the scorer, so the dev score is
 - **Reconstructed practice answers**: the competition states the 04:30Z read had 3,868 players tracked and 4,276 trophies earned, every rate but the 100% one fell, and the 05:00Z read was unchanged. I rebuilt the per-trophy answers three ways (proportional / top-5-concentrated / uniform split of the new players' earners). The persistence baseline scores 1.39–1.58 on these proxies (the published figure is 1.51, typical miss 0.68pp — my proxies reproduce the 0.68pp exactly), and this program scores **0.21–0.36**. The ranking is stable across all three reconstructions.
 - **A synthetic final-like case**: a simulated 2.5-day history with six refreshes and a 4.5-day horizon, ground truth generated with different functional forms than the model's own. Persistence scores 0.87; this program scores **0.29**, and its regression recovers the true arrival rates and progression hazards to within a few percent.
 
-Both entrypoints (`main.ts` and `main.py`) produce byte-identical outputs, run in ~0.3 s per case, and are deterministic.
+Both entrypoints (`main.ts`, Node 22) produce deterministic output, run in ~0.3 s per case. (`main.py`, a Python port, was removed: the grader runs one entrypoint at the root.)
 
 ## Run it
 

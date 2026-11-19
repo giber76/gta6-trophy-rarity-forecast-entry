@@ -115,7 +115,10 @@ function refreshEvents(reads: ParsedRead[]): Refresh[] {
 }
 
 /** Least squares for dE_i = s * dP + g * (non-earners) * dt over the refreshes.
- *  Returns null when fewer than two refreshes (unidentifiable). */
+ *  Returns null when fewer than two refreshes (unidentifiable). A tiny ridge
+ *  term keeps the solve stable when two refreshes are nearly alike (exactly
+ *  determined, so a near-singular system would otherwise blow up); it is far
+ *  below the scale of the sums, so well-conditioned fits are unchanged. */
 function fitSG(ev: Refresh[], i: number): { s: number; g: number } | null {
   if (ev.length < 2) return null;
   let S11 = 0, S12 = 0, S22 = 0, T1 = 0, T2 = 0;
@@ -125,6 +128,8 @@ function fitSG(ev: Refresh[], i: number): { s: number; g: number } | null {
     const y = e.Ecur[i]! - e.Eprev[i]!;
     S11 += x1 * x1; S12 += x1 * x2; S22 += x2 * x2; T1 += x1 * y; T2 += x2 * y;
   }
+  const ridge = 1e-9 * (S11 + S22) / 2;
+  S11 += ridge; S22 += ridge;
   const det = S11 * S22 - S12 * S12;
   if (Math.abs(det) < 1e-12) return null;
   const s = (T1 * S22 - T2 * S12) / det;
